@@ -1,4 +1,4 @@
-# QuickShare - Simple Text Sharing
+# Simply Paste - Simple Text Sharing
 
 A clean, anonymous pastebin-like service built with Next.js and Firebase. Share text snippets quickly with readable URLs and QR codes.
 

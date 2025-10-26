@@ -12,7 +12,7 @@ export default function Home() {
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
-    
+
     setIsLoading(true);
     try {
       const response = await fetch('/api/create', {
@@ -44,7 +44,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">QuickShare</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Simply Paste</h1>
           <p className="text-gray-600">Share text snippets quickly and anonymously</p>
         </div>
 
@@ -59,9 +59,8 @@ export default function Home() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Enter your text here..."
-              className={`w-full h-96 p-4 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                isOverLimit ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`w-full h-96 p-4 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${isOverLimit ? 'border-red-500' : 'border-gray-300'
+                }`}
             />
           </div>
 

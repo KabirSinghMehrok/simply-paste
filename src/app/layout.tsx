@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "QuickShare - Simple Text Sharing",
+  title: "Simply Paste - Simple Text Sharing",
   description: "Share text snippets quickly and anonymously with readable URLs and QR codes",
 };
 
