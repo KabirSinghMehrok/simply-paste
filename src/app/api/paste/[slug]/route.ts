@@ -5,7 +5,7 @@ import { isValidReadableId } from '@/lib/generateId';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
@@ -30,6 +30,19 @@ export async function GET(
     }
 
     const pasteData = docSnap.data();
+
+    // Check if paste has expired (fallback if TTL policy isn't active)
+    if (pasteData.expireAt) {
+      const expireTime = new Date(pasteData.expireAt);
+      const now = new Date();
+
+      if (now > expireTime) {
+        return NextResponse.json(
+          { error: 'Paste expired' },
+          { status: 404 }
+        );
+      }
+    }
 
     return NextResponse.json({
       content: pasteData.content,

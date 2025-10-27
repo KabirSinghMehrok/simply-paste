@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { generateReadableId } from '@/lib/generateId';
+import { config } from '@/lib/config';
 
 const MAX_CHARACTERS = 50000;
 const MAX_RETRIES = 5;
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Generate unique readable ID with collision handling
     let slug: string;
     let attempts = 0;
-    
+
     do {
       if (attempts >= MAX_RETRIES) {
         return NextResponse.json(
@@ -43,23 +44,27 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
-      
+
       slug = generateReadableId();
       attempts++;
-      
+
       // Check if this slug already exists
       const docRef = doc(db, 'pastes', slug);
       const docSnap = await getDoc(docRef);
-      
+
       if (!docSnap.exists()) {
         break; // Found a unique slug
       }
     } while (true);
 
-    // Create the paste document
+    // Create the paste document with TTL
+    const now = new Date();
+    const expireAt = new Date(now.getTime() + config.PASTE_EXPIRY_MINUTES * 60 * 1000);
+
     const pasteData = {
       content: content.trim(),
-      createdAt: new Date().toISOString(),
+      createdAt: now.toISOString(),
+      expireAt: expireAt, // TTL field for automatic deletion
     };
 
     const docRef = doc(db, 'pastes', slug);
