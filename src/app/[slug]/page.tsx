@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import Link from 'next/link';
+import { useCountdown } from '@/hooks/useCountdown';
 
 interface PasteData {
   content: string;
@@ -19,6 +20,9 @@ export default function PastePage() {
   const [copied, setCopied] = useState(false);
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  
+  // Use countdown hook when paste is loaded
+  const countdown = useCountdown(paste?.createdAt || new Date().toISOString());
 
   useEffect(() => {
     const fetchPaste = async () => {
@@ -75,16 +79,23 @@ export default function PastePage() {
     );
   }
 
-  if (error) {
+  if (error || (paste && countdown.isExpired)) {
     return (
       <main className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <div className="text-6xl mb-4">📄</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Paste Not Found</h1>
-            <p className="text-gray-600 mb-6">{error}</p>
-            <Link 
-              href="/" 
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              {countdown.isExpired ? 'Paste Expired' : 'Paste Not Found'}
+            </h1>
+            <p className="text-gray-600 mb-6">
+              {countdown.isExpired 
+                ? 'This paste has expired and is no longer available.' 
+                : error
+              }
+            </p>
+            <Link
+              href="/"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Create New Paste
@@ -103,8 +114,22 @@ export default function PastePage() {
           <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium">
             ← Create New Paste
           </Link>
-          <div className="text-sm text-gray-500">
-            Created: {new Date(paste!.createdAt).toLocaleDateString()}
+          <div className="flex flex-col items-end gap-1">
+            <div className="text-sm text-gray-500">
+              Created: {new Date(paste!.createdAt).toLocaleDateString()}
+            </div>
+            <div className={`text-sm font-medium ${
+              countdown.timeRemaining < 300000 // Less than 5 minutes
+                ? 'text-red-600' 
+                : countdown.timeRemaining < 600000 // Less than 10 minutes
+                ? 'text-orange-600'
+                : 'text-green-600'
+            }`}>
+              {countdown.isExpired 
+                ? 'Expired' 
+                : `Expires in: ${countdown.formattedTime}`
+              }
+            </div>
           </div>
         </div>
 
@@ -132,11 +157,10 @@ export default function PastePage() {
               />
               <button
                 onClick={copyToClipboard}
-                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
-                  copied 
-                    ? 'bg-green-600 text-white' 
+                className={`px-4 py-3 rounded-lg font-medium transition-colors ${copied
+                    ? 'bg-green-600 text-white'
                     : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
+                  }`}
               >
                 {copied ? 'Copied!' : 'Copy'}
               </button>
