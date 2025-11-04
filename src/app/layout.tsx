@@ -1,5 +1,34 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+// JetBrains Mono font configuration
+const jetbrainsMono = localFont({
+  src: [
+    {
+      path: "../assets/fonts/JetBrainsMono-Light.woff2",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/JetBrainsMono-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/JetBrainsMono-SemiBold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/JetBrainsMono-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Simply Paste - Simple Text Sharing",
@@ -13,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={jetbrainsMono.variable}>{children}</body>
     </html>
   );
 }

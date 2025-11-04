@@ -4,7 +4,11 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCountdown } from '@/hooks/useCountdown';
+import SimplyPasteLogo from '../../assets/icons/simply-paste.svg';
+import LinkIcon from '../../assets/icons/link.svg';
+import ShareIcon from '../../assets/icons/share.svg';
 
 interface PasteData {
   content: string;
@@ -20,7 +24,7 @@ export default function PastePage() {
   const [copied, setCopied] = useState(false);
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  
+
   // Use countdown hook when paste is loaded
   const countdown = useCountdown(paste?.createdAt || new Date().toISOString());
 
@@ -89,8 +93,8 @@ export default function PastePage() {
               {countdown.isExpired ? 'Paste Expired' : 'Paste Not Found'}
             </h1>
             <p className="text-gray-600 mb-6">
-              {countdown.isExpired 
-                ? 'This paste has expired and is no longer available.' 
+              {countdown.isExpired
+                ? 'This paste has expired and is no longer available.'
                 : error
               }
             </p>
@@ -107,81 +111,107 @@ export default function PastePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-gray-50 py-4 px-4">
+      <div className="max-w-[1920px] mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium">
-            ← Create New Paste
-          </Link>
-          <div className="flex flex-col items-end gap-1">
-            <div className="text-sm text-gray-500">
-              Created: {new Date(paste!.createdAt).toLocaleDateString()}
-            </div>
-            <div className={`text-sm font-medium ${
-              countdown.timeRemaining < 300000 // Less than 5 minutes
-                ? 'text-red-600' 
-                : countdown.timeRemaining < 600000 // Less than 10 minutes
-                ? 'text-orange-600'
-                : 'text-green-600'
-            }`}>
-              {countdown.isExpired 
-                ? 'Expired' 
-                : `Expires in: ${countdown.formattedTime}`
-              }
-            </div>
+        <div className="flex flex-row mb-8">
+          <Image
+            src={SimplyPasteLogo}
+            alt="Simply Paste Logo"
+            width={40}
+            height={40}
+            className="mr-2"
+          />
+          <div className='flex flex-col'>
+            <h1 className="text-[20px] font-bold text-gray-900">Simply Paste</h1>
+            <p className="text-gray-600">Share text snippets quickly</p>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="mb-4">
-            <h2 className="text-lg font-medium text-gray-900 mb-2">Content</h2>
-            <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg border text-sm font-mono overflow-x-auto">
+        <div className='flex flex-col-reverse md:flex-row w-full gap-4 md:gap-8'>
+          <div className="flex flex-col gap-2 flex-1">
+            {/* Content */}
+            <div className="flex items-center justify-between mb-2 ml-auto">
+              <Link
+                href="/"
+                className="text-sm w-[200px] bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-2 px-3 rounded-md transition-colors h-fit"
+              >
+                + Create a new paste
+              </Link>
+            </div>
+
+            <pre className="whitespace-pre-wrap bg-white p-4 rounded-lg border text-sm font-mono overflow-x-auto shadow-sm border-gray-300">
               {paste!.content}
             </pre>
           </div>
-        </div>
 
-        {/* Sharing Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* URL Sharing */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Share URL</h3>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={currentUrl}
-                readOnly
-                className="flex-1 p-3 border border-gray-300 rounded-lg bg-gray-50 text-sm"
-              />
-              <button
-                onClick={copyToClipboard}
-                className={`px-4 py-3 rounded-lg font-medium transition-colors ${copied
-                    ? 'bg-green-600 text-white'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
-                  }`}
-              >
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
-            </div>
-          </div>
-
-          {/* QR Code */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">QR Code</h3>
-            <div className="flex justify-center">
-              <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                <QRCode
-                  size={150}
-                  value={currentUrl}
-                  viewBox="0 0 256 256"
-                />
+          {/* Features */}
+          <div className="shrink-0 flex flex-col items-center gap-4 text-center w-[200px]">
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-sm text-gray-500">
+                Created: {new Date(paste!.createdAt).toLocaleDateString()}
+              </div>
+              <div className={`text-sm font-medium ${countdown.timeRemaining < 300000 // Less than 5 minutes
+                ? 'text-red-600'
+                : countdown.timeRemaining < 600000 // Less than 10 minutes
+                  ? 'text-orange-600'
+                  : 'text-green-600'
+                }`}>
+                {countdown.isExpired
+                  ? 'Expired'
+                  : `Expires in: ${countdown.formattedTime}`
+                }
               </div>
             </div>
-            <p className="text-sm text-gray-600 text-center mt-2">
-              Scan to open this paste
-            </p>
+            <div className="p-2">
+              <Image
+                src={LinkIcon}
+                alt="Icon representing Share URL"
+                width={20}
+                height={20}
+                className="mx-auto mb-2"
+              />
+              <h3 className="font-medium text-gray-900 mb-1">Share URL</h3>
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  value={currentUrl}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-xs"
+                />
+                <button
+                  onClick={copyToClipboard}
+                  className={`px-3 py-2 rounded-lg font-medium transition-colors text-xs ${copied
+                    ? 'bg-green-600 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                >
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+            <div className="p-2">
+              <Image
+                src={ShareIcon}
+                alt="Icon representing QR Code"
+                width={20}
+                height={20}
+                className="mx-auto mb-2"
+              />
+              <h3 className="font-medium text-gray-900 mb-1">QR Code</h3>
+              <div className="flex justify-center">
+                <div className="p-2 bg-white border border-gray-200 rounded-lg">
+                  <QRCode
+                    size={120}
+                    value={currentUrl}
+                    viewBox="0 0 256 256"
+                  />
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                Scan to open this paste
+              </p>
+            </div>
           </div>
         </div>
       </div>

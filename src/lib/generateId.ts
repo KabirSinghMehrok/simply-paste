@@ -26,7 +26,7 @@ export function generateReadableId(): string {
   const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
   const number = Math.floor(Math.random() * 100); // 0-99
-
+  
   return `${adjective}-${noun}-${number}`;
 }
 

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --font-family-jetbrains: var(--font-jetbrains-mono), 'Courier New', monospace;
+
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
 
@@ -72,5 +74,31 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
   }
+}
+
+/* JetBrains Mono font utility classes */
+.font-mono {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
+}
+
+.font-mono-light {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
+  font-weight: 300;
+}
+
+.font-mono-regular {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
+  font-weight: 400;
+}
+
+.font-mono-semibold {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.font-mono-bold {
+  font-family: var(--font-jetbrains-mono), 'Courier New', monospace;
+  font-weight: 700;
 }
